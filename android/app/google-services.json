@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "215611998432",
+    "project_id": "saesistemmob",
+    "storage_bucket": "saesistemmob.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:215611998432:android:e58dde59926cc00b939085",
+        "android_client_info": {
+          "package_name": "br.com.portview.saemob"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "215611998432-00qvtcjj78uac4qqq1r5u6but1g7om3u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.portview.saemob",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "215611998432-bd1ve70sq8n3d770sslp21rdso0e49dj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCF9_EkCjLu8dvTDI6g2dpXdJrrZiRNKoQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "215611998432-bd1ve70sq8n3d770sslp21rdso0e49dj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "215611998432-gi2femd5cjmr4knqsk8apto71ttts1jo.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "br.com.portview.saemob"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
