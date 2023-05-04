@@ -7,8 +7,13 @@ part of 'serializers.dart';
 // **************************************************************************
 
 Serializers _$serializers = (new Serializers().toBuilder()
-      ..add(UsersRecord.serializer)
-      ..add(UsuariosRecord.serializer))
+      ..add(CodigosServRecord.serializer)
+      ..add(OrgaoPublicoRecord.serializer)
+      ..add(PedidoRecord.serializer)
+      ..add(ServicosBaseRecord.serializer)
+      ..add(TarefasBaseRecord.serializer)
+      ..add(TarefasServicoRecord.serializer)
+      ..add(UsersRecord.serializer))
     .build();
 
 // ignore_for_file: deprecated_member_use_from_same_package,type=lint

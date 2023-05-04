@@ -1,8 +1,13 @@
 import 'package:built_value/standard_json_plugin.dart';
 import 'package:from_css_color/from_css_color.dart';
 
-import 'usuarios_record.dart';
 import 'users_record.dart';
+import 'pedido_record.dart';
+import 'tarefas_base_record.dart';
+import 'servicos_base_record.dart';
+import 'orgao_publico_record.dart';
+import 'codigos_serv_record.dart';
+import 'tarefas_servico_record.dart';
 
 import 'index.dart';
 
@@ -13,8 +18,13 @@ part 'serializers.g.dart';
 const kDocumentReferenceField = 'Document__Reference__Field';
 
 @SerializersFor(const [
-  UsuariosRecord,
   UsersRecord,
+  PedidoRecord,
+  TarefasBaseRecord,
+  ServicosBaseRecord,
+  OrgaoPublicoRecord,
+  CodigosServRecord,
+  TarefasServicoRecord,
 ])
 final Serializers serializers = (_$serializers.toBuilder()
       ..add(DocumentReferenceSerializer())

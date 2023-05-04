@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'backend/backend.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:csv/csv.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'flutter_flow/flutter_flow_util.dart';
 
 class FFAppState extends ChangeNotifier {
@@ -16,8 +15,7 @@ class FFAppState extends ChangeNotifier {
   }
 
   Future initializePersistedState() async {
-    secureStorage = FlutterSecureStorage();
-    _flagLogin = await secureStorage.getBool('ff_flagLogin') ?? _flagLogin;
+    prefs = await SharedPreferences.getInstance();
   }
 
   void update(VoidCallback callback) {
@@ -25,17 +23,71 @@ class FFAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  late FlutterSecureStorage secureStorage;
+  late SharedPreferences prefs;
+
+  List<DocumentReference> _pedidosTemp = [];
+  List<DocumentReference> get pedidosTemp => _pedidosTemp;
+  set pedidosTemp(List<DocumentReference> _value) {
+    _pedidosTemp = _value;
+  }
+
+  void addToPedidosTemp(DocumentReference _value) {
+    _pedidosTemp.add(_value);
+  }
+
+  void removeFromPedidosTemp(DocumentReference _value) {
+    _pedidosTemp.remove(_value);
+  }
+
+  void removeAtIndexFromPedidosTemp(int _index) {
+    _pedidosTemp.removeAt(_index);
+  }
+
+  List<String> _TarIPs = [
+    '23ngBTUZ71KD0YCADA3Y',
+    '6VnrLkll8UKOpR1s7ORp',
+    'Cyazb0mbiwWEZg1RNaRZ'
+  ];
+  List<String> get TarIPs => _TarIPs;
+  set TarIPs(List<String> _value) {
+    _TarIPs = _value;
+  }
+
+  void addToTarIPs(String _value) {
+    _TarIPs.add(_value);
+  }
+
+  void removeFromTarIPs(String _value) {
+    _TarIPs.remove(_value);
+  }
+
+  void removeAtIndexFromTarIPs(int _index) {
+    _TarIPs.removeAt(_index);
+  }
+
+  DocumentReference? _servicoBaseIdVar =
+      FirebaseFirestore.instance.doc('/servicosBase/c7lZ7K6EUPwVfez3d88i');
+  DocumentReference? get servicoBaseIdVar => _servicoBaseIdVar;
+  set servicoBaseIdVar(DocumentReference? _value) {
+    _servicoBaseIdVar = _value;
+  }
 
   bool _flagLogin = true;
   bool get flagLogin => _flagLogin;
   set flagLogin(bool _value) {
     _flagLogin = _value;
-    secureStorage.setBool('ff_flagLogin', _value);
   }
 
-  void deleteFlagLogin() {
-    secureStorage.delete(key: 'ff_flagLogin');
+  bool _ListaTarBaseTodas = true;
+  bool get ListaTarBaseTodas => _ListaTarBaseTodas;
+  set ListaTarBaseTodas(bool _value) {
+    _ListaTarBaseTodas = _value;
+  }
+
+  bool _ListaTarBaseFiltro = true;
+  bool get ListaTarBaseFiltro => _ListaTarBaseFiltro;
+  set ListaTarBaseFiltro(bool _value) {
+    _ListaTarBaseFiltro = _value;
   }
 }
 
@@ -47,40 +99,4 @@ LatLng? _latLngFromString(String? val) {
   final lat = double.parse(split.first);
   final lng = double.parse(split.last);
   return LatLng(lat, lng);
-}
-
-extension FlutterSecureStorageExtensions on FlutterSecureStorage {
-  void remove(String key) => delete(key: key);
-
-  Future<String?> getString(String key) async => await read(key: key);
-  Future<void> setString(String key, String value) async =>
-      await write(key: key, value: value);
-
-  Future<bool?> getBool(String key) async => (await read(key: key)) == 'true';
-  Future<void> setBool(String key, bool value) async =>
-      await write(key: key, value: value.toString());
-
-  Future<int?> getInt(String key) async =>
-      int.tryParse(await read(key: key) ?? '');
-  Future<void> setInt(String key, int value) async =>
-      await write(key: key, value: value.toString());
-
-  Future<double?> getDouble(String key) async =>
-      double.tryParse(await read(key: key) ?? '');
-  Future<void> setDouble(String key, double value) async =>
-      await write(key: key, value: value.toString());
-
-  Future<List<String>?> getStringList(String key) async =>
-      await read(key: key).then((result) {
-        if (result == null || result.isEmpty) {
-          return null;
-        }
-        return CsvToListConverter()
-            .convert(result)
-            .first
-            .map((e) => e.toString())
-            .toList();
-      });
-  Future<void> setStringList(String key, List<String> value) async =>
-      await write(key: key, value: ListToCsvConverter().convert([value]));
 }

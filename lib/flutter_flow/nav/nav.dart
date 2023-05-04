@@ -70,14 +70,16 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       initialLocation: '/',
       debugLogDiagnostics: true,
       refreshListenable: appStateNotifier,
-      errorBuilder: (context, _) =>
-          appStateNotifier.loggedIn ? HomePageWidget() : LoginWidget(),
+      errorBuilder: (context, _) => appStateNotifier.loggedIn
+          ? GerServTarefasBaseWidget()
+          : LoginWidget(),
       routes: [
         FFRoute(
           name: '_initialize',
           path: '/',
-          builder: (context, _) =>
-              appStateNotifier.loggedIn ? HomePageWidget() : LoginWidget(),
+          builder: (context, _) => appStateNotifier.loggedIn
+              ? GerServTarefasBaseWidget()
+              : LoginWidget(),
         ),
         FFRoute(
           name: 'HomePage',
@@ -88,6 +90,17 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: 'login',
           path: '/login',
           builder: (context, params) => LoginWidget(),
+        ),
+        FFRoute(
+          name: 'PagTeste01',
+          path: '/pagTeste01',
+          builder: (context, params) => PagTeste01Widget(),
+        ),
+        FFRoute(
+          name: 'gerServTarefasBase',
+          path: '/gerServTarefasBase',
+          requireAuth: true,
+          builder: (context, params) => GerServTarefasBaseWidget(),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
       urlPathStrategy: UrlPathStrategy.path,

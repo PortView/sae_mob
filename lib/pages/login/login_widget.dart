@@ -3,6 +3,7 @@ import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import '/custom_code/actions/index.dart' as actions;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -50,8 +51,8 @@ class _LoginWidgetState extends State<LoginWidget>
           curve: Curves.easeInOut,
           delay: 0.ms,
           duration: 300.ms,
-          begin: 0.9,
-          end: 1.0,
+          begin: Offset(0.9, 0.9),
+          end: Offset(1.0, 1.0),
         ),
         TiltEffect(
           curve: Curves.easeInOut,
@@ -84,8 +85,8 @@ class _LoginWidgetState extends State<LoginWidget>
           curve: Curves.easeInOut,
           delay: 0.ms,
           duration: 300.ms,
-          begin: 0.9,
-          end: 1.0,
+          begin: Offset(0.9, 0.9),
+          end: Offset(1.0, 1.0),
         ),
         TiltEffect(
           curve: Curves.easeInOut,
@@ -108,6 +109,8 @@ class _LoginWidgetState extends State<LoginWidget>
     _model.emailAddressCadastroController ??= TextEditingController();
     _model.passwordCadastro1Controller ??= TextEditingController();
     _model.passwordCadastro2Controller ??= TextEditingController();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
   }
 
   @override
@@ -153,7 +156,9 @@ class _LoginWidgetState extends State<LoginWidget>
                     ),
                     alignment: AlignmentDirectional(0.0, 0.0),
                     child: Text(
-                      'SAE',
+                      FFLocalizations.of(context).getText(
+                        '9la9eozt' /* SAE */,
+                      ),
                       style: FlutterFlowTheme.of(context).displaySmall.override(
                             fontFamily: 'Plus Jakarta Sans',
                             color: Colors.white,
@@ -193,7 +198,9 @@ class _LoginWidgetState extends State<LoginWidget>
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                'Bem vindo',
+                                FFLocalizations.of(context).getText(
+                                  'h2xrogid' /* Bem vindo */,
+                                ),
                                 textAlign: TextAlign.center,
                                 style: FlutterFlowTheme.of(context)
                                     .displaySmall
@@ -208,7 +215,9 @@ class _LoginWidgetState extends State<LoginWidget>
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     0.0, 12.0, 0.0, 24.0),
                                 child: Text(
-                                  'Preencha as informações abaixo para acessar sua conta.',
+                                  FFLocalizations.of(context).getText(
+                                    'uohl795f' /* Preencha as informações abaixo... */,
+                                  ),
                                   textAlign: TextAlign.center,
                                   style: FlutterFlowTheme.of(context)
                                       .labelMedium
@@ -231,7 +240,10 @@ class _LoginWidgetState extends State<LoginWidget>
                                     autofillHints: [AutofillHints.email],
                                     obscureText: false,
                                     decoration: InputDecoration(
-                                      labelText: 'Email',
+                                      labelText:
+                                          FFLocalizations.of(context).getText(
+                                        '0a8e8pde' /* Email */,
+                                      ),
                                       labelStyle: FlutterFlowTheme.of(context)
                                           .labelLarge
                                           .override(
@@ -301,7 +313,10 @@ class _LoginWidgetState extends State<LoginWidget>
                                     autofillHints: [AutofillHints.password],
                                     obscureText: !_model.passwordVisibility,
                                     decoration: InputDecoration(
-                                      labelText: 'Senha',
+                                      labelText:
+                                          FFLocalizations.of(context).getText(
+                                        '4r2uh91l' /* Senha */,
+                                      ),
                                       labelStyle: FlutterFlowTheme.of(context)
                                           .labelLarge
                                           .override(
@@ -376,24 +391,64 @@ class _LoginWidgetState extends State<LoginWidget>
                               ),
                               Padding(
                                 padding: EdgeInsetsDirectional.fromSTEB(
-                                    0.0, 0.0, 0.0, 16.0),
+                                    0.0, 0.0, 0.0, 5.0),
                                 child: FFButtonWidget(
                                   onPressed: () async {
-                                    GoRouter.of(context).prepareAuthEvent();
-
-                                    final user =
-                                        await authManager.signInWithEmail(
+                                    _model.resposta =
+                                        await actions.authFlutterFire(
                                       context,
                                       _model.emailAddressController.text,
                                       _model.passwordController.text,
+                                      'E-mail invalido.',
+                                      'Senha invalida.',
+                                      'Usuário não cadastrado.',
                                     );
-                                    if (user == null) {
-                                      return;
+                                    if (_model.resposta == 'valid') {
+                                      setState(() {
+                                        _model.emailAddressController?.clear();
+                                        _model.passwordController?.clear();
+                                        _model.emailAddressCadastroController
+                                            ?.clear();
+                                        _model.passwordCadastro1Controller
+                                            ?.clear();
+                                        _model.passwordCadastro2Controller
+                                            ?.clear();
+                                      });
+
+                                      context.pushNamed(
+                                        'gerServTarefasBase',
+                                        extra: <String, dynamic>{
+                                          kTransitionInfoKey: TransitionInfo(
+                                            hasTransition: true,
+                                            transitionType:
+                                                PageTransitionType.fade,
+                                          ),
+                                        },
+                                      );
+                                    } else {
+                                      await showDialog(
+                                        context: context,
+                                        builder: (alertDialogContext) {
+                                          return AlertDialog(
+                                            title: Text('Atenção'),
+                                            content: Text(_model.resposta!),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(
+                                                    alertDialogContext),
+                                                child: Text('Ok'),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
                                     }
 
-                                    context.goNamedAuth('HomePage', mounted);
+                                    setState(() {});
                                   },
-                                  text: 'Entrar',
+                                  text: FFLocalizations.of(context).getText(
+                                    'ffijgrpt' /* Entrar */,
+                                  ),
                                   options: FFButtonOptions(
                                     width: double.infinity,
                                     height: 44.0,
@@ -419,11 +474,78 @@ class _LoginWidgetState extends State<LoginWidget>
                                   ),
                                 ),
                               ),
+
+                              // You will have to add an action on this rich text to go to your login page.
                               Padding(
                                 padding: EdgeInsetsDirectional.fromSTEB(
-                                    16.0, 0.0, 16.0, 24.0),
+                                    0.0, 0.0, 0.0, 12.0),
+                                child: InkWell(
+                                  splashColor: Colors.transparent,
+                                  focusColor: Colors.transparent,
+                                  hoverColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  onTap: () async {
+                                    if (_model
+                                        .emailAddressController.text.isEmpty) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Email required!',
+                                          ),
+                                        ),
+                                      );
+                                      return;
+                                    }
+                                    await authManager.resetPassword(
+                                      email: _model.emailAddressController.text,
+                                      context: context,
+                                    );
+                                  },
+                                  child: RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: FFLocalizations.of(context)
+                                              .getText(
+                                            'b7hzhrjb' /* Esqueci minha senha.  */,
+                                          ),
+                                          style: TextStyle(),
+                                        ),
+                                        TextSpan(
+                                          text: FFLocalizations.of(context)
+                                              .getText(
+                                            'lh0emep0' /* Enviar */,
+                                          ),
+                                          style: FlutterFlowTheme.of(context)
+                                              .bodyMedium
+                                              .override(
+                                                fontFamily: 'Plus Jakarta Sans',
+                                                color: Color(0xFF4B39EF),
+                                                fontSize: 14.0,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                        )
+                                      ],
+                                      style: FlutterFlowTheme.of(context)
+                                          .bodyMedium
+                                          .override(
+                                            fontFamily: 'Plus Jakarta Sans',
+                                            color: Color(0xFF101213),
+                                            fontSize: 14.0,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsetsDirectional.fromSTEB(
+                                    16.0, 10.0, 16.0, 15.0),
                                 child: Text(
-                                  'Ou',
+                                  FFLocalizations.of(context).getText(
+                                    'aokh02hx' /* Ou */,
+                                  ),
                                   textAlign: TextAlign.center,
                                   style: FlutterFlowTheme.of(context)
                                       .labelMedium
@@ -447,9 +569,12 @@ class _LoginWidgetState extends State<LoginWidget>
                                       return;
                                     }
 
-                                    context.goNamedAuth('HomePage', mounted);
+                                    context.goNamedAuth(
+                                        'gerServTarefasBase', mounted);
                                   },
-                                  text: 'Continuar com o Google',
+                                  text: FFLocalizations.of(context).getText(
+                                    '3hpmfrcb' /* Continuar com o Google */,
+                                  ),
                                   icon: FaIcon(
                                     FontAwesomeIcons.google,
                                     size: 20.0,
@@ -487,7 +612,9 @@ class _LoginWidgetState extends State<LoginWidget>
                                   onPressed: () {
                                     print('Button pressed ...');
                                   },
-                                  text: 'Continuar com a Apple',
+                                  text: FFLocalizations.of(context).getText(
+                                    'lgn9ijr9' /* Continuar com a Apple */,
+                                  ),
                                   icon: FaIcon(
                                     FontAwesomeIcons.apple,
                                     size: 20.0,
@@ -524,6 +651,10 @@ class _LoginWidgetState extends State<LoginWidget>
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     0.0, 12.0, 0.0, 12.0),
                                 child: InkWell(
+                                  splashColor: Colors.transparent,
+                                  focusColor: Colors.transparent,
+                                  hoverColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
                                   onTap: () async {
                                     setState(() {
                                       FFAppState().flagLogin = false;
@@ -533,11 +664,17 @@ class _LoginWidgetState extends State<LoginWidget>
                                     text: TextSpan(
                                       children: [
                                         TextSpan(
-                                          text: 'Não tenho cadastro?  ',
+                                          text: FFLocalizations.of(context)
+                                              .getText(
+                                            'kvan424l' /* Não tenho cadastro?   */,
+                                          ),
                                           style: TextStyle(),
                                         ),
                                         TextSpan(
-                                          text: 'Cadastrar',
+                                          text: FFLocalizations.of(context)
+                                              .getText(
+                                            'h4hx4d0f' /* Cadastrar */,
+                                          ),
                                           style: FlutterFlowTheme.of(context)
                                               .bodyMedium
                                               .override(
@@ -597,7 +734,9 @@ class _LoginWidgetState extends State<LoginWidget>
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                'Cadastro',
+                                FFLocalizations.of(context).getText(
+                                  'hv6zdu3v' /* Cadastro */,
+                                ),
                                 textAlign: TextAlign.center,
                                 style: FlutterFlowTheme.of(context)
                                     .displaySmall
@@ -612,7 +751,9 @@ class _LoginWidgetState extends State<LoginWidget>
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     0.0, 12.0, 0.0, 24.0),
                                 child: Text(
-                                  'Preencha as informações abaixo para acessar sua conta.',
+                                  FFLocalizations.of(context).getText(
+                                    'ldu824xc' /* Preencha as informações abaixo... */,
+                                  ),
                                   textAlign: TextAlign.center,
                                   style: FlutterFlowTheme.of(context)
                                       .labelMedium
@@ -636,7 +777,10 @@ class _LoginWidgetState extends State<LoginWidget>
                                     autofillHints: [AutofillHints.email],
                                     obscureText: false,
                                     decoration: InputDecoration(
-                                      labelText: 'Email',
+                                      labelText:
+                                          FFLocalizations.of(context).getText(
+                                        'cda2rw8z' /* Email */,
+                                      ),
                                       labelStyle: FlutterFlowTheme.of(context)
                                           .labelLarge
                                           .override(
@@ -708,7 +852,10 @@ class _LoginWidgetState extends State<LoginWidget>
                                     obscureText:
                                         !_model.passwordCadastro1Visibility,
                                     decoration: InputDecoration(
-                                      labelText: 'Senha',
+                                      labelText:
+                                          FFLocalizations.of(context).getText(
+                                        'lv6f9fcw' /* Senha */,
+                                      ),
                                       labelStyle: FlutterFlowTheme.of(context)
                                           .labelLarge
                                           .override(
@@ -796,7 +943,10 @@ class _LoginWidgetState extends State<LoginWidget>
                                     obscureText:
                                         !_model.passwordCadastro2Visibility,
                                     decoration: InputDecoration(
-                                      labelText: 'Senha',
+                                      labelText:
+                                          FFLocalizations.of(context).getText(
+                                        'oc6jumn5' /* Senha */,
+                                      ),
                                       labelStyle: FlutterFlowTheme.of(context)
                                           .labelLarge
                                           .override(
@@ -877,9 +1027,23 @@ class _LoginWidgetState extends State<LoginWidget>
                                 child: FFButtonWidget(
                                   onPressed: () async {
                                     GoRouter.of(context).prepareAuthEvent();
+                                    if (_model
+                                            .passwordCadastro1Controller.text !=
+                                        _model
+                                            .passwordCadastro2Controller.text) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Passwords don\'t match!',
+                                          ),
+                                        ),
+                                      );
+                                      return;
+                                    }
 
-                                    final user =
-                                        await authManager.signInWithEmail(
+                                    final user = await authManager
+                                        .createAccountWithEmail(
                                       context,
                                       _model
                                           .emailAddressCadastroController.text,
@@ -889,9 +1053,12 @@ class _LoginWidgetState extends State<LoginWidget>
                                       return;
                                     }
 
-                                    context.goNamedAuth('HomePage', mounted);
+                                    context.goNamedAuth(
+                                        'gerServTarefasBase', mounted);
                                   },
-                                  text: 'Cadastrar',
+                                  text: FFLocalizations.of(context).getText(
+                                    'cppkvfjd' /* Cadastrar */,
+                                  ),
                                   options: FFButtonOptions(
                                     width: double.infinity,
                                     height: 44.0,
@@ -921,7 +1088,9 @@ class _LoginWidgetState extends State<LoginWidget>
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     16.0, 0.0, 16.0, 24.0),
                                 child: Text(
-                                  'Ou',
+                                  FFLocalizations.of(context).getText(
+                                    'xauz083q' /* Ou */,
+                                  ),
                                   textAlign: TextAlign.center,
                                   style: FlutterFlowTheme.of(context)
                                       .labelMedium
@@ -945,9 +1114,12 @@ class _LoginWidgetState extends State<LoginWidget>
                                       return;
                                     }
 
-                                    context.goNamedAuth('HomePage', mounted);
+                                    context.goNamedAuth(
+                                        'gerServTarefasBase', mounted);
                                   },
-                                  text: 'Continuar com o Google',
+                                  text: FFLocalizations.of(context).getText(
+                                    'cukr4h2t' /* Continuar com o Google */,
+                                  ),
                                   icon: FaIcon(
                                     FontAwesomeIcons.google,
                                     size: 20.0,
@@ -985,7 +1157,9 @@ class _LoginWidgetState extends State<LoginWidget>
                                   onPressed: () {
                                     print('ButtonAppleCadastro pressed ...');
                                   },
-                                  text: 'Continuar com a Apple',
+                                  text: FFLocalizations.of(context).getText(
+                                    'y9ff6xve' /* Continuar com a Apple */,
+                                  ),
                                   icon: FaIcon(
                                     FontAwesomeIcons.apple,
                                     size: 20.0,
@@ -1022,6 +1196,10 @@ class _LoginWidgetState extends State<LoginWidget>
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     0.0, 12.0, 0.0, 12.0),
                                 child: InkWell(
+                                  splashColor: Colors.transparent,
+                                  focusColor: Colors.transparent,
+                                  hoverColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
                                   onTap: () async {
                                     setState(() {
                                       FFAppState().flagLogin = true;
@@ -1031,11 +1209,17 @@ class _LoginWidgetState extends State<LoginWidget>
                                     text: TextSpan(
                                       children: [
                                         TextSpan(
-                                          text: 'Já tenho cadastro. ',
+                                          text: FFLocalizations.of(context)
+                                              .getText(
+                                            '8mlsxwdo' /* Já tenho cadastro.  */,
+                                          ),
                                           style: TextStyle(),
                                         ),
                                         TextSpan(
-                                          text: 'Login',
+                                          text: FFLocalizations.of(context)
+                                              .getText(
+                                            'qr84syw5' /* Login */,
+                                          ),
                                           style: FlutterFlowTheme.of(context)
                                               .bodyMedium
                                               .override(
